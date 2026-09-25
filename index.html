@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>NabuKey, une invitation</title>
+<meta name="description" content="Un clavier qui apprend ta façon d'écrire.">
+<meta property="og:title" content="NabuKey">
+<meta property="og:description" content="Un clavier qui apprend ta façon d'écrire.">
+<script>
+  // 712, PAGE D'INVITATION DE NABUKEY (PARRAINAGE.md, 10.17).
+  //
+  // Le code du parrain arrive dans l'adresse, ?c=BCDFGHJ. Il n'est accepté
+  // que s'il a la forme d'un code : sept signes de l'alphabet du parrainage
+  // (Parrainage.alphabet), pas une voyelle, ni 0 ni 1. Sinon la page reste
+  // une simple page d'installation, sans bouton qui ouvrirait l'app avec
+  // n'importe quoi dedans.
+  //
+  // IDENTIFIANT APP STORE : à remplacer par le vrai numéro une fois l'app
+  // créée dans App Store Connect (onglet Informations sur l'app, « Apple ID »).
+  var APP_ID = "0000000000";
+  var params = new URLSearchParams(location.search);
+  var brut = (params.get("c") || "").toUpperCase();
+  var CODE = /^[BCDFGHJKLMNPQRSTVWXYZ2-9]{7}$/.test(brut) ? brut : "";
+  var OUVRIR = CODE ? "keyboardstt://parrain/" + CODE : "keyboardstt://";
+  // 713 : LE NOM QUE LE PARRAIN A CHOISI, ?n=Emm. Même règle que l'app
+  // (Parrainage.nomDInvitationValide) : une lettre d'abord, puis lettres,
+  // espaces, apostrophes et traits d'union, 24 signes au plus. Écrit comme du
+  // texte, jamais comme du HTML. Sinon « Un ami ».
+  var nomBrut = (params.get("n") || "").trim();
+  var NOM = /^\p{L}[\p{L} '’-]{0,23}$/u.test(nomBrut) ? nomBrut : "";
+  // La bannière d'Apple en haut de Safari : son bouton « Ouvrir » passe lui
+  // aussi le code à l'app, par app-argument. Écrite avant la fin de l'en tête
+  // pour que Safari la lise.
+  if (APP_ID !== "0000000000") {
+    document.write('<meta name="apple-itunes-app" content="app-id=' + APP_ID
+      + (CODE ? ', app-argument=' + OUVRIR : '') + '">');
+  }
+</script>
+<style>
+  :root {
+    --fond: #f6f6f4;
+    --carte: #ffffff;
+    --texte: #16161a;
+    --doux: #6b6b73;
+    --trait: rgba(22, 22, 26, 0.08);
+    --accent: #3f6ff0;
+    --accent-texte: #ffffff;
+    --bouton2: rgba(22, 22, 26, 0.06);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --fond: #0b0b0d;
+      --carte: #16161a;
+      --texte: #f2f2f4;
+      --doux: #9a9aa3;
+      --trait: rgba(255, 255, 255, 0.08);
+      --accent: #5b86ff;
+      --accent-texte: #ffffff;
+      --bouton2: rgba(255, 255, 255, 0.08);
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--fond);
+    color: var(--texte);
+    font: 17px/1.45 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: max(24px, env(safe-area-inset-top)) 16px max(24px, env(safe-area-inset-bottom));
+  }
+  main { width: 100%; max-width: 420px; }
+  .icone {
+    display: block; width: 72px; height: 72px;
+    border-radius: 17px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.14);
+    margin-bottom: 22px;
+  }
+  h1 { font-size: 30px; line-height: 1.15; letter-spacing: -0.02em; margin: 0 0 8px; font-weight: 700; }
+  .sous { color: var(--doux); margin: 0 0 28px; }
+  .carte {
+    background: var(--carte);
+    border: 1px solid var(--trait);
+    border-radius: 20px;
+    padding: 6px 18px;
+  }
+  .etape { display: flex; gap: 14px; align-items: flex-start; padding: 16px 0; }
+  .etape + .etape { border-top: 1px solid var(--trait); }
+  .num {
+    flex: none; width: 26px; height: 26px; border-radius: 50%;
+    display: grid; place-items: center;
+    font-size: 14px; font-weight: 600;
+    background: var(--bouton2); color: var(--texte);
+  }
+  .etape p { margin: 2px 0 12px; font-size: 16px; }
+  .etape .contenu { flex: 1; min-width: 0; }
+  a.bouton {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    height: 48px; border-radius: 14px;
+    font-weight: 600; font-size: 16px; text-decoration: none;
+    transition: transform 0.12s ease, opacity 0.12s ease;
+  }
+  a.bouton:active { transform: scale(0.98); opacity: 0.85; }
+  .principal { background: var(--accent); color: var(--accent-texte); }
+  .second { background: var(--bouton2); color: var(--texte); }
+  .code {
+    margin: 22px 2px 0; color: var(--doux); font-size: 14px; text-align: center;
+  }
+  .code b {
+    font: 600 15px/1 ui-monospace, "SF Mono", Menlo, monospace;
+    letter-spacing: 0.18em; color: var(--texte);
+  }
+  .cache { display: none; }
+</style>
+</head>
+<body>
+<main>
+  <picture>
+    <source srcset="icone-sombre.png" media="(prefers-color-scheme: dark)">
+    <img class="icone" src="icone-clair.png" alt="" width="72" height="72">
+  </picture>
+  <h1 data-fr="Un ami t’invite sur NabuKey" data-en="A friend invited you to NabuKey">Un ami t’invite sur NabuKey</h1>
+  <p class="sous" data-fr="Le clavier qui apprend ta façon d’écrire." data-en="The keyboard that learns the way you write.">Le clavier qui apprend ta façon d’écrire.</p>
+
+  <div class="carte">
+    <div class="etape">
+      <div class="num">1</div>
+      <div class="contenu">
+        <p data-fr="Installe NabuKey." data-en="Install NabuKey.">Installe NabuKey.</p>
+        <a class="bouton principal" id="store" href="#" data-fr="Voir sur l’App Store" data-en="View on the App Store">Voir sur l’App Store</a>
+      </div>
+    </div>
+    <div class="etape" id="etape2">
+      <div class="num">2</div>
+      <div class="contenu">
+        <p data-fr="Reviens ici, puis ouvre l’app : ton ami saura que tu viens de sa part." data-en="Come back here, then open the app: your friend will know they sent you.">Reviens ici, puis ouvre l’app : ton ami saura que tu viens de sa part.</p>
+        <a class="bouton second" id="ouvrir" href="#" data-fr="Ouvrir NabuKey" data-en="Open NabuKey">Ouvrir NabuKey</a>
+      </div>
+    </div>
+  </div>
+
+  <p class="code" id="code"><span data-fr="Si l’app te le demande, le code est" data-en="If the app asks, the code is">Si l’app te le demande, le code est</span> <b id="valeur"></b></p>
+</main>
+<script>
+  // LA LANGUE DU TÉLÉPHONE : français s'il est en français, anglais sinon.
+  var fr = (navigator.language || "fr").toLowerCase().indexOf("fr") === 0;
+  document.documentElement.lang = fr ? "fr" : "en";
+  document.querySelectorAll("[data-fr]").forEach(function (el) {
+    el.textContent = el.getAttribute(fr ? "data-fr" : "data-en");
+  });
+  if (!fr) document.title = "NabuKey, an invitation";
+  if (NOM) {
+    document.querySelector("h1").textContent = fr
+      ? NOM + " t’invite sur NabuKey" : NOM + " invited you to NabuKey";
+    document.querySelector("#etape2 p").textContent = fr
+      ? "Reviens ici, puis ouvre l’app : " + NOM + " saura que tu viens de sa part."
+      : "Come back here, then open the app: " + NOM + " will know they sent you.";
+  }
+
+  document.getElementById("store").href = "https://apps.apple.com/app/id" + APP_ID;
+  document.getElementById("ouvrir").href = OUVRIR;
+  if (CODE) {
+    document.getElementById("valeur").textContent = CODE;
+  } else {
+    // Sans code valable, pas d'étape 2 ni de code : la page reste une
+    // simple page d'installation.
+    document.getElementById("etape2").classList.add("cache");
+    document.getElementById("code").classList.add("cache");
+  }
+</script>
+</body>
+</html>
